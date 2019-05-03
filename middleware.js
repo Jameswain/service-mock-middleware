@@ -57,13 +57,13 @@ function initialize(options) {
                         const watchTarget = path.resolve(path.join(path.parse(arrJs[i]).dir, options.filename));
                         if (fe.existsSync(watchTarget)) {
                             arrHtmlPlugins.forEach(p => {
-                               if (p.options.chunks.indexOf(key) !== -1) {
-                                   if (options.mapMock[p.options.filename]) {
-                                       options.mapMock[p.options.filename].push(watchTarget);
-                                   } else {
-                                       options.mapMock[p.options.filename] = [ watchTarget ];
-                                   }
-                               }
+                                if (p.options.chunks.indexOf(key) !== -1) {
+                                    if (options.mapMock[p.options.filename]) {
+                                        options.mapMock[p.options.filename].push(watchTarget);
+                                    } else {
+                                        options.mapMock[p.options.filename] = [ watchTarget ];
+                                    }
+                                }
                             });
                         }
                     }
@@ -124,14 +124,14 @@ function serviceMockMiddleware(options = {
                     next();
                     return;
                 } else {
-                    let mockdata = mockjson[req.url];
+                    let mockdata = mockjson[url.parse(req.url).pathname];
                     if (typeof mockdata === 'function') { // 如果是一个函数，则执行函数，并传入请求参数和req，res对象
                         mockdata = mockdata(req.query, req, res);
                         if (!mockdata) {
-                            console.error(req.url + '函数没有返回值，返回内容为：' + mockdata);
+                            console.error(url.parse(req.url).pathname + '函数没有返回值，返回内容为：' + mockdata);
                             next();
                         } else if (mockdata.enable || mockdata.enable === void 0) {
-                            table.push([req.url, true]);
+                            table.push([url.parse(req.url).pathname, true]);
                             logUpdate(table.toString());
                             // console.log(table.toString());
                             // console.log(url.parse(req.url).pathname + ' => enable：', mockdata.enable);
@@ -140,19 +140,19 @@ function serviceMockMiddleware(options = {
                             res.json(mockdata);
                             res.end();
                         } else {
-                            table.push([req.url, false]);
+                            table.push([url.parse(req.url).pathname, false]);
                             logUpdate(table.toString());
                             next();
                             return;
                         }
                     } else if (typeof mockdata === 'object') {
                         if (mockdata.enable === false) {
-                            table.push([req.url, false]);
+                            table.push([url.parse(req.url).pathname, false]);
                             logUpdate(table.toString());
                             next();
                             return;
                         } else {
-                            table.push([req.url, true]);
+                            table.push([url.parse(req.url).pathname, true]);
                             delete mockdata.enable;
                             res.setHeader('service-mock-middleware', 'This is a mock data !');
                             res.json(mockdata);
