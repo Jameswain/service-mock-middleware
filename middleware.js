@@ -132,13 +132,15 @@ function serviceMockMiddleware(options = {
                             next();
                         } else if (mockdata.enable || mockdata.enable === void 0) {
                             table.push([url.parse(req.url).pathname, true]);
-                            logUpdate(table.toString());
                             // console.log(table.toString());
                             // console.log(url.parse(req.url).pathname + ' => enable：', mockdata.enable);
                             delete mockdata.enable;
                             res.setHeader('service-mock-middleware', 'This is a mock data !');
                             res.json(mockdata);
                             res.end();
+                            setTimeout(() => {
+                                logUpdate(table.toString());
+                            },0)
                         } else {
                             table.push([url.parse(req.url).pathname, false]);
                             logUpdate(table.toString());
