@@ -1,0 +1,39 @@
+{
+  "name": "service-mock-middleware",
+  "version": "0.0.1",
+  "description": "express mock middleware http webpack webpack-dev-server",
+  "main": "middleware.js",
+  "scripts": {
+    "example": "webpack-dev-server --config example/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jameswain/service-mock-middleware.git"
+  },
+  "keywords": [
+    "express",
+    "mock",
+    "middleware",
+    "http",
+    "webpack",
+    "webpack-dev-server"
+  ],
+  "author": "Jameswain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jameswain/service-mock-middleware/issues"
+  },
+  "homepage": "https://github.com/Jameswain/service-mock-middleware#readme",
+  "dependencies": {
+    "cli-table2": "^0.2.0",
+    "fs-extra": "^7.0.1",
+    "log-update": "^3.2.0"
+  },
+  "devDependencies": {
+    "express": "^4.16.4",
+    "webpack": "^4.30.0",
+    "webpack-dev-server": "^3.3.1",
+    "webpack-cli": "^3.3.1",
+    "html-webpack-plugin": "^3.2.0"
+  }
+}
