@@ -92,12 +92,12 @@ function serviceMockMiddleware(options = {
 }) {
     // 初始化中间件，监听mock文件目录或文件
     initialize(options);
-    return function (req, res, next) {
+    return function smm(req, res, next) {
         if (path.parse(req.url.split('?')[0]).ext || !req.headers.referer) { // 不是ajax请求 || 没有webpack配置 || req.headers.referer为undefied，表示直接在浏览器访问接口，不走mock
             next();
         } else {
             logUpdate('');
-            const pathname = new URL(req.headers.referer).pathname.substr(1);
+            const pathname = new URL(req.headers.referer).pathname.substr(1) || 'index.html';
             const table = new Table({head: ['请求路径', '开关[enable]'], style: {border: []}});
             if (options.mapMock[pathname]) {    // 有mock配置文件映射
                 // 获取mock文件配置，如果有多个mock配置文件，则合并mock配置文件

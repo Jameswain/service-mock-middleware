@@ -1,5 +1,5 @@
 module.exports = {
-    // enable: false,              // 全局mock开关，默认为false关闭状态
+    enable: true,              // 全局mock开关
     '/search_subjects': (params) => {
         console.log('/aweme_list =>', params);
         return {
