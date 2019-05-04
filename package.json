@@ -1,6 +1,6 @@
 {
   "name": "service-mock-middleware",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "express mock middleware http webpack webpack-dev-server",
   "main": "middleware.js",
   "scripts": {

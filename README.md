@@ -26,7 +26,7 @@
 npm install service-mock-middleware --save-dev
 ```
 <h2 align="center">使用</h2>
-<h4 align="left">1、webpack-dev-server配置中使用中间件</h4>
+<h4 align="left">1、在webpack.config.js配置文件中使用中间件</h4>
 
 ``` javascript
 const path = require('path');
