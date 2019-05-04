@@ -57,7 +57,7 @@ module.exports = {
             // 使用service-mock-middleware中间件
             app.use(serviceMockMiddleware({ 
               webpackConfig: module.exports, // webpack配置
-              server 												 // webpack-dev-server对象，用于控制浏览器刷新
+              server 	 // webpack-dev-server对象，用于控制浏览器刷新
             }));
         }
     },
@@ -153,3 +153,11 @@ $.get('/api/demo');
 * 不仅如此，我们的终端(Terminal)也会有一个表格告诉你，你当前访问的接口mock的开关状态
 
 <h2 align="center">运行例子</h2>
+
+```shell
+git clone https://github.com/Jameswain/service-mock-middleware.git   // 克隆源码到本地磁盘
+npm i 							// 安装依赖
+npm run example1		// 运行例子1，访问http://localhost:8080，http://localhost:8080/main.html
+npm run example2		// 运行例子2，访问http://localhost:8080
+npm run example3		// 运行例子3，访问http://localhost:8080
+```

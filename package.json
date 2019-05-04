@@ -4,7 +4,9 @@
   "description": "express mock middleware http webpack webpack-dev-server",
   "main": "middleware.js",
   "scripts": {
-    "example": "webpack-dev-server --config example/webpack.config.js"
+    "example1": "webpack-dev-server --config example/webpack.config.js",
+    "example2": "webpack-dev-server --config example/webpack.config2.js",
+    "example3": "webpack-dev-server --config example/webpack.config3.js"
   },
   "repository": {
     "type": "git",
