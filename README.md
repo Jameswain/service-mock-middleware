@@ -153,7 +153,7 @@ $.get('/api/demo');
 * 不仅如此，我们的终端(Terminal)也会有一个表格告诉你，你当前访问的接口mock的开关状态
 
 <h2 align="center">运行例子</h2>
-
+在源码仓库中，有一些例子，可以把这个源码仓库克隆到本地，运行起来，看一下效果，具体操作如下：
 ``` javascript
 git clone https://github.com/Jameswain/service-mock-middleware.git   // 克隆源码到本地磁盘
 npm install				// 安装依赖
