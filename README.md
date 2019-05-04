@@ -128,11 +128,13 @@ $.get('/search_subjects', res => {
 })
 $.get('/api/demo');
 ```
+
 **运行效果：**
-![002](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/002.jpg)
-通过运行结果，我们可以发现 /search_subjects 接口走的就是我们编写的mock数据，而 /api/demo 的mock开关没有打开，所以没有走mock数据，而且mock配置文件每次改变保存浏览器都会实时刷新。
+![a002](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/002.jpg)
+​		通过运行结果，我们可以发现 **/search_subjects** 接口走的就是我们编写的mock数据，而 **/api/demo** 的mock开关没有打开，所以没有走mock数据，而且mock配置文件每次改变保存浏览器都会实时刷新。
 ![003](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/003.jpg)
-如果你的ajax请求走的是mock数据，它的response会多了一个service-mock-middleware的响应头告诉你，你这个http请求走的是mock数据，以便于区分。
+​		如果你的ajax请求走的是mock数据，它的response会多了一个service-mock-middleware的响应头告诉你，你这个http请求走的是mock数据，以便于区分。
 ![004](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/004.jpg)
 不仅如此，我们的终端(Terminal)也会有一个表格告诉你，你当前访问的接口mock的开关状态
+
 <h2 align="center">运行例子</h2>
