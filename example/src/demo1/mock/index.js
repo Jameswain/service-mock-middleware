@@ -1,9 +1,9 @@
 module.exports = {
-    enable: true,              // 全局mock开关
+    enable: true,              // 全局mock开关，如果不写，默认为开启状态
     '/search_subjects': (params) => {
         console.log('/aweme_list =>', params);
         return {
-            enable: true,       // 开启接口mock数据，不写，默认为开启状态
+            enable: true,  // 开启接口mock数据，如果不写，默认为开启状态
             subjects: [
                 {
                     'rate': '7.0',
@@ -26,40 +26,8 @@ module.exports = {
                     'id': '4840388',
                     'cover_y': 1512,
                     'is_new': false
-                },
-                {
-                    'rate': '6.2',
-                    'cover_x': 1500,
-                    'title': '死寂',
-                    'url': 'https://movie.douban.com/subject/27050133/',
-                    'playable': false,
-                    'cover': 'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2552168278.webp',
-                    'id': '27050133',
-                    'cover_y': 2222,
-                    'is_new': true
-                },
-                {
-                    'rate': '6.5',
-                    'cover_x': 631,
-                    'title': '大奥 最终章',
-                    'url': 'https://movie.douban.com/subject/30466625/',
-                    'playable': false,
-                    'cover': 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2552367600.webp',
-                    'id': '30466625',
-                    'cover_y': 900,
-                    'is_new': true
-                },
-                {
-                    'rate': '6.2',
-                    'cover_x': 1433,
-                    'title': '欢迎来到马文镇',
-                    'url': 'https://movie.douban.com/subject/26369709/',
-                    'playable': false,
-                    'cover': 'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2540630419.webp',
-                    'id': '26369709',
-                    'cover_y': 2048,
-                    'is_new': true
                 }
+
             ]
         }
     },
@@ -76,3 +44,4 @@ module.exports = {
         'is_new': true
     }
 }
+001
