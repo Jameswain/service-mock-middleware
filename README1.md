@@ -15,13 +15,11 @@
 - 使用、配置简单、灵活、支持请求参数接收，可以返回灵活丰富的mock数据，满足各种业务场景。
 
 <h2 align="center">安装</h2>
-
 ``` shell
 npm install service-mock-middleware --save-dev
 ```
 <h2 align="center">使用</h2>
 <h4 align="left">1、webpack-dev-server配置中使用中间件</h4>
-
 ``` javascript
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -73,7 +71,6 @@ module.exports = {
 ```
 <h4 align="left">2、webpack入口文件的同级目录下创建mock配置文件</h4>
 ![001](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/001.jpg)
-
 ``` javascript
 // example/src/demo1/mock/index.js      mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
 module.exports = {
@@ -123,9 +120,7 @@ module.exports = {
     }
 }
 ```
-
 <h4 align="left">3、发送ajax请求，获取mock数据</h4>
-
 ``` javascript
 // example/src/demo1/index.js
 import $ from '../common/ajax'
