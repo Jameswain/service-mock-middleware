@@ -1,6 +1,6 @@
 {
   "name": "service-mock-middleware",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "express mock middleware http webpack webpack-dev-server",
   "main": "middleware.js",
   "scripts": {
@@ -30,10 +30,11 @@
     "log-update": "^3.2.0"
   },
   "devDependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.16.4",
+    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.30.0",
-    "webpack-dev-server": "^3.3.1",
     "webpack-cli": "^3.3.1",
-    "html-webpack-plugin": "^3.2.0"
+    "webpack-dev-server": "^3.3.1"
   }
 }

@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const bodyParser = require('body-parser');
 const serviceMockMiddleware = require('../middleware');
 
 module.exports = {
@@ -25,6 +26,8 @@ module.exports = {
          * @param server
          */
         before(app, server) {
+            // POST 创建 application/x-www-form-urlencoded 编码解析，POST参数解析
+            app.use(bodyParser.urlencoded({ extended: false }));
             // 使用mock中间件
             app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
         }

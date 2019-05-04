@@ -3,7 +3,7 @@ module.exports = {
     '/search_subjects': (params) => {
         console.log('/aweme_list =>', params);
         return {
-            enable: true,       // 开启接口mock数据，默认为关闭状态
+            enable: true,       // 开启接口mock数据，不写，默认为开启状态
             subjects: [
                 {
                     'rate': '7.0',
@@ -64,7 +64,7 @@ module.exports = {
         }
     },
     '/api/demo': {
-        enable: !true,
+        enable: false,      // 关闭该接口的mock数据
         'rate': '6.2',
         'cover_x': 1433,
         'title': '欢迎来到马文镇',
