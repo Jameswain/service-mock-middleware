@@ -14,12 +14,12 @@
 - 使用、配置简单、灵活、支持请求参数接收，可以返回灵活丰富的mock数据，满足各种业务场景。
 
 <h2 align="center">安装</h2>
-```
+```shell
 npm install service-mock-middleware --save-dev
 ```
 <h2 align="center">使用</h2>
 <h4 align="left">1、webpack-dev-server配置中使用中间件</h4>
-```
+```javascript
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const bodyParser = require('body-parser');	
@@ -70,10 +70,69 @@ module.exports = {
 ```
 <h4 align="left">2、webpack入口文件的同级目录下创建mock配置文件</h4>
 ![001](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/001.jpg)
+```javascript
+// example/src/demo1/mock/index.js      mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
+module.exports = {
+    enable: true,              // 全局mock开关，如果不写，默认为开启状态，如果设置为false，表示关闭整个配置文件的mock配置，等服务端的接口准备ready后，可以将这个字段设置为false
+    '/search_subjects': (params, req, res) => {
+        console.log('/aweme_list =>', params);
+        return {
+            // enable: true,  // 开启接口mock数据，如果不写，默认为开启状态
+            subjects: [
+                {
+                    'rate': '7.0',
+                    'cover_x': 7142,
+                    'title': '飞驰人生',
+                    'url': 'https://movie.douban.com/subject/30163509/',
+                    'playable': true,
+                    'cover': 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2542973862.webp',
+                    'id': '30163509',
+                    'cover_y': 10000,
+                    'is_new': false
+                },
+                {
+                    'rate': '5.7',
+                    'cover_x': 1078,
+                    'title': '新喜剧之王',
+                    'url': 'https://movie.douban.com/subject/4840388/',
+                    'playable': true,
+                    'cover': 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2541240741.webp',
+                    'id': '4840388',
+                    'cover_y': 1512,
+                    'is_new': false
+                }
+
+            ]
+        }
+    },
+    '/api/demo': {
+        enable: false,      // 关闭该接口的mock数据
+        'rate': '6.2',
+        'cover_x': 1433,
+        'title': '欢迎来到马文镇',
+        'url': 'https://movie.douban.com/subject/26369709/',
+        'playable': false,
+        'cover': 'https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2540630419.webp',
+        'id': '26369709',
+        'cover_y': 2048,
+        'is_new': true
+    }
+}
+```
 <h4 align="left">3、发送ajax请求，获取mock数据</h4>
+```javascript
+// example/src/demo1/index.js
+import $ from '../common/ajax'
+$.get('/search_subjects', res => {
+    console.log('/search_subjects =>', res);
+})
+$.get('/api/demo');
 ```
-
-```
-
+**运行效果：**
+![002](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/002.jpg)
+通过运行结果，我们可以发现 /search_subjects 接口走的就是我们编写的mock数据，而 /api/demo 的mock开关没有打开，所以没有走mock数据，而且mock配置文件每次改变保存浏览器都会实时刷新。
+![003](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/003.jpg)
+如果你的ajax请求走的是mock数据，它的response会多了一个service-mock-middleware的响应头告诉你，你这个http请求走的是mock数据，以便于区分。
+![004](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/004.jpg)
+不仅如此，我们的终端(Terminal)也会有一个表格告诉你，你当前访问的接口mock的开关状态
 <h2 align="center">运行例子</h2>
-
