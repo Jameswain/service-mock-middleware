@@ -155,9 +155,11 @@ $.get('/api/demo');
 <h2 align="center">运行例子</h2>
 在源码仓库中，有一些例子，可以把这个源码仓库克隆到本地，运行起来，看一下效果，具体操作如下：
 ``` javascript
+
 git clone https://github.com/Jameswain/service-mock-middleware.git   // 克隆源码到本地磁盘
 npm install				// 安装依赖
 npm run example1		// 运行例子1，访问http://localhost:8080，http://localhost:8080/main.html
 npm run example2		// 运行例子2，访问http://localhost:8080
 npm run example3		// 运行例子3，访问http://localhost:8080
+
 ```
