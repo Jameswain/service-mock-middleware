@@ -126,7 +126,13 @@ function serviceMockMiddleware(options = {
                 } else {
                     let mockdata = mockjson[url.parse(req.url).pathname];
                     if (typeof mockdata === 'function') { // 如果是一个函数，则执行函数，并传入请求参数和req，res对象
-                        mockdata = mockdata(req.query, req, res);
+                        try {
+                            mockdata = mockdata(req.query, req, res);
+                        } catch (e) {
+                            console.error(url.parse(req.url).pathname, '函数语法错误，请检测您的mock文件');
+                            console.error(e.message);
+                            // console.error(e.trace());
+                        }
                         if (!mockdata) {
                             console.error(url.parse(req.url).pathname + '函数没有返回值，返回内容为：' + mockdata);
                             next();
