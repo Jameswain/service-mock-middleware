@@ -119,7 +119,7 @@ function serviceMockMiddleware(options = {
                     }
                 }, {});
 
-                if (mockjson.enable === false) {
+                if (!mockjson || mockjson.enable === false) {
                     logUpdate(table.toString());
                     next();
                     return;
