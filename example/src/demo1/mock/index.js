@@ -3,7 +3,6 @@ module.exports = {
     enable: true,              // 全局mock开关，如果不写，默认为开启状态， 如果设置为false，表示关闭整个配置文件的mock配置，等服务端的接口准备ready后，可以将这个字段设置为false
     '/search_subjects': (params, req, res) => {
         console.log('/search_subjects =>', params);
-        xxx
         return {
             // enable: true,  // 开启接口mock数据，如果不写，默认为开启状态
             subjects: [

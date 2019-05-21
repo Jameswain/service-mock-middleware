@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/Jameswain/service-mock-middleware#readme",
   "dependencies": {
+    "chalk": "^2.4.2",
     "cli-table2": "^0.2.0",
     "fs-extra": "^7.0.1",
     "log-update": "^3.2.0"
