@@ -33,7 +33,7 @@ module.exports = {
         }
     },
     '/api/demo': {
-        enable: false,      // 关闭该接口的mock数据
+        // enable: false,      // 关闭该接口的mock数据
         'rate': '6.2',
         'cover_x': 1433,
         'title': '欢迎来到马文镇',

@@ -33,20 +33,27 @@ function initialize(options) {
         const filename = options.filename.substr(1);
         if (typeof options.webpackConfig.entry === 'string') {
             arrHtmlPlugins.forEach(p => {
-                if (fe.existsSync(path.join(path.parse(path.resolve(options.webpackConfig.entry)).dir, filename))) {
-                    options.mapMock[p.options.filename] = [ path.join(path.parse(path.resolve(options.webpackConfig.entry)).dir, filename) ];
+              const watchTarget = path.join(path.parse(path.resolve(options.webpackConfig.entry)).dir, filename);
+                if (fe.existsSync(watchTarget)) {
+                  const stat = fs.statSync(watchTarget);
+                  options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
+                  options.mapMock[p.options.filename] = stat.isFile() ? options.mapMock[p.options.filename].push(watchTarget) : options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
                 }
             });
         } else if (options.webpackConfig.entry instanceof Array) {
             arrHtmlPlugins.forEach(p => {
                 options.webpackConfig.entry.forEach(entry => {
-                    if (fe.existsSync(path.join(path.parse(path.resolve(entry)).dir, filename))) {
-                        if (options.mapMock[p.options.filename]) {
-                            options.mapMock[p.options.filename].push(path.join(path.parse(path.resolve(entry)).dir, filename));
-                        } else {
-                            options.mapMock[p.options.filename] = [ path.join(path.parse(path.resolve(entry)).dir, filename) ];
-                        }
-                    }
+                  const watchTarget = path.join(path.parse(path.resolve(entry)).dir, filename);
+                  if (fe.existsSync(watchTarget)) {
+                    options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
+                    const stat = fs.statSync(watchTarget);
+                    options.mapMock[p.options.filename] = stat.isFile() ? options.mapMock[p.options.filename].push(watchTarget) : options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
+                      // if () {
+                      //     options.mapMock[p.options.filename].push(path.join(path.parse(path.resolve(entry)).dir, filename));
+                      // } else {
+                      //     options.mapMock[p.options.filename] = [ path.join(path.parse(path.resolve(entry)).dir, filename) ];
+                      // }
+                  }
                 });
             });
         } else if (Object.prototype.toString.call(options.webpackConfig.entry) === '[object Object]') {
@@ -152,8 +159,9 @@ function serviceMockMiddleware(options = {
                             // console.log(url.parse(req.url).pathname + ' => enable：', mockdata.enable);
                             delete mockdata.enable;
                             res.setHeader('service-mock-middleware', 'This is a mock data !');
-                            res.json(mockdata);
-                            res.end();
+                            res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
+                            res.json(mockdata).end();
+                            // res.end();
                             setTimeout(() => {
                                 logUpdate(table.toString());
                             },0)
@@ -171,6 +179,7 @@ function serviceMockMiddleware(options = {
                             table.push([url.parse(req.url).pathname, true]);
                             delete mockdata.enable;
                             res.setHeader('service-mock-middleware', 'This is a mock data !');
+                            res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
                             res.json(mockdata);
                             res.end();
                             logUpdate(table.toString());

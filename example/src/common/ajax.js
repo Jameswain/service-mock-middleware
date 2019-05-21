@@ -1,6 +1,7 @@
 function $() {
-
 }
+
+console.log('ajax.js')
 
 function ajax(method, url, success){
     var r = new XMLHttpRequest();
