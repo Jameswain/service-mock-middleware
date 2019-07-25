@@ -7,6 +7,17 @@ const { URL } = url;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const logUpdate = require("log-update");
 const chalk = require('chalk');
+const semver = require('semver')
+const packageConfig = require('./package.json')
+const currentVersion = semver.clean(process.version);
+
+// TODO 需要做低版本升级提示
+if (!semver.satisfies(currentVersion, packageConfig.engines.node)) {
+    // node版本低于package.json配置的版本，提示用户升级node
+    console.log(chalk.red('😂 对不起，您的node版本过低，请升级您的node!'));
+    console.log(`您的版本：${chalk.red(currentVersion)}`);
+    console.log(`要求版本：${chalk.green(packageConfig.engines.node)}`);
+}
 
 /**
  * 初始化mock中间件
@@ -103,7 +114,7 @@ function serviceMockMiddleware(options = {
         if (path.parse(req.url.split('?')[0]).ext || !req.headers.referer) { // 不是ajax请求 || 没有webpack配置 || req.headers.referer为undefied，表示直接在浏览器访问接口，不走mock
             return next();
         } else {
-            logUpdate('');
+            logUpdate.clear();
             const pathname = new URL(req.headers.referer).pathname.substr(1) || 'index.html';
             const table = new Table({head: ['请求路径', '开关[enable]'], style: {border: []}});
             if (options.mapMock[pathname]) {    // 有mock配置文件映射
@@ -115,11 +126,13 @@ function serviceMockMiddleware(options = {
                     // console.log(mockfile);
                     if (fe.existsSync(mockfile)) {
                         try {
-                            const strFileContent = fs.readFileSync(mockfile).toString().trim();
-                            if (!strFileContent) {
+                            // const strFileContent = fs.readFileSync(mockfile).toString().trim();
+                            delete require.cache[mockfile];
+                            const mockjson = require(mockfile);
+                            if (!Object.keys(mockjson).length) {
                                 return previousValue;
                             }
-                            const mockjson = eval(`(${strFileContent})`);
+                            // const mockjson = eval(`(${strFileContent})`);
                             table.push([mockfile + ' 文件mock总开关', `${mockjson.enable === false ? 'false' : 'true'}`]);
                             if (mockjson.enable === false) {
                                 return previousValue
