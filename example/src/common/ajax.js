@@ -1,7 +1,4 @@
-function $() {
-}
-
-console.log('ajax.js')
+function $() {}
 
 function ajax(method, url, success){
     var r = new XMLHttpRequest();

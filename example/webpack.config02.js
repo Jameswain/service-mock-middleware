@@ -6,8 +6,8 @@ const serviceMockMiddleware = require('../middleware');
 module.exports = {
     mode: 'development',
     entry: [
-        path.resolve(__dirname, 'src', 'demo1', 'index.js'),
-        path.resolve(__dirname, 'src/demo2/main.js')
+        path.resolve(__dirname, 'src', 'demo01', 'index.js'),
+        path.resolve(__dirname, 'src/demo02/main.js')
     ],
     output: {
         filename: '[name].[hash].js',

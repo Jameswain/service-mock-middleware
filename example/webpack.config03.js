@@ -5,10 +5,7 @@ const serviceMockMiddleware = require('../middleware');
 
 module.exports = {
     mode: 'development',
-    entry: {
-        app: path.resolve(__dirname, 'src', 'demo1', 'index.js'),   // 必须使用绝对路径
-        main: path.resolve(__dirname, 'src/demo2/main.js')          // 必须使用相对路径
-    },
+    entry: path.resolve(__dirname, 'src', 'demo03', 'index.js'),
     output: {
         filename: '[name].[hash].js',
         path: path.resolve(__dirname, 'dist')
@@ -31,14 +28,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname,'src/common/index.html'),          // html模版
             filename: path.resolve(__dirname, 'dist', 'index.html'),            // html输出位置
-            title: 'index',                                                     // html默认标题
-            chunks: ['app' ]                                                    // entry对象的key，一个key就是一个chunk
-        }),
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'src', 'common', 'index.html'),
-            filename: path.resolve(__dirname, 'dist', 'main.html'),
-            title: 'main',
-            chunks: [ 'main' ]
         })
     ]
 }

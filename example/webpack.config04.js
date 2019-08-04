@@ -5,7 +5,7 @@ const serviceMockMiddleware = require('../middleware');
 
 module.exports = {
     mode: 'development',
-    entry: path.resolve(__dirname, 'src', 'demo1', 'index.js'),
+    entry: path.resolve(__dirname, 'src', 'demo04', 'index.js'),
     output: {
         filename: '[name].[hash].js',
         path: path.resolve(__dirname, 'dist')
@@ -21,7 +21,16 @@ module.exports = {
             // POST 创建 application/x-www-form-urlencoded 编码解析，POST参数解析
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用mock中间件
-            app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
+            app.use(serviceMockMiddleware({
+                /** 必传参数：webpack配置 */
+                webpackConfig: module.exports,
+                /** 必传参数：webpack-dev-server对象，用于控制浏览器刷新 */
+                server,
+                /** 可选参数：配置mock配置文件所在的文件夹路径或文件路径 */
+                // filename: '/mock-data/other.js'
+                // filename: '/mock-data/'
+                filename: '/mock-data'
+            }));
         }
     },
     plugins: [

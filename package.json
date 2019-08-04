@@ -4,9 +4,10 @@
   "description": "express mock middleware http webpack webpack-dev-server",
   "main": "middleware.js",
   "scripts": {
-    "example1": "webpack-dev-server --config example/webpack.config.js",
-    "example2": "webpack-dev-server --config example/webpack.config2.js",
-    "example3": "webpack-dev-server --config example/webpack.config3.js"
+    "example01": "webpack-dev-server --config example/webpack.config01.js",
+    "example02": "webpack-dev-server --config example/webpack.config02.js",
+    "example03": "webpack-dev-server --config example/webpack.config03.js",
+    "example04": "webpack-dev-server --config example/webpack.config04.js"
   },
   "repository": {
     "type": "git",
@@ -28,16 +29,16 @@
   "homepage": "https://github.com/Jameswain/service-mock-middleware#readme",
   "dependencies": {
     "chalk": "^2.4.2",
-    "cli-table2": "^0.2.0",
+    "cli-table3": "^0.5.1",
     "fs-extra": "^7.0.1",
     "log-update": "^3.2.0",
-    "mockjs": "^1.0.1-beta3",
     "semver": "^6.3.0"
   },
   "devDependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "html-webpack-plugin": "^3.2.0",
+    "mockjs": "^1.0.1-beta3",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
     "webpack-dev-server": "^3.3.1"

@@ -1,4 +1,4 @@
-const Table = require('cli-table2');
+const Table = require('cli-table3');
 const path = require('path');
 const fs = require('fs');
 const fe = require('fs-extra');
@@ -20,80 +20,80 @@ if (!semver.satisfies(currentVersion, packageConfig.engines.node)) {
 }
 
 /**
- * 初始化mock中间件
- * @param options 中间件配置
+ * 设置index.html和mock文件映射关系
+ * @param p - htmlWebpackPlugin对象
+ * @param options - 中间件配置选项
  */
-function initialize(options) {
-    // 默认要监听的文件或路径
-    options.filename = options.filename || '/mock';
+function setMapMock(p, options, watchTarget) {
+    if (!fe.existsSync(watchTarget)) return;
+    const stat = fs.statSync(watchTarget);
+    options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
+    if (stat.isFile()) {
+        options.mapMock[p.options.filename].push(watchTarget);
+    } else {
+        options.mapMock[p.options.filename] = options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
+    }
+}
+
+/**
+ * 将webpack.entry位置和mock配置文件进行映射
+ */
+function webpackEntryToMapMock(options) {
+    if (!options.webpackConfig) throw new Error('请传入webpack配置');
+    const filename = options.filename.indexOf('/') === 0 ? options.filename.substr(1) : options.filename;
+    const arrHtmlPlugins = options.webpackConfig.plugins.filter(item => item instanceof HtmlWebpackPlugin);
+    // 字符串类型entry
+    if (typeof options.webpackConfig.entry === 'string') {
+        const watchTarget = path.join(path.parse(path.resolve(options.webpackConfig.entry)).dir, filename);
+        arrHtmlPlugins.forEach(p => setMapMock(p, options, watchTarget));
+    }
+    // 数组类型entry
+    else if (Array.isArray(options.webpackConfig.entry)) {
+        arrHtmlPlugins.forEach(p => {
+            options.webpackConfig.entry.forEach(entry => {
+                const watchTarget = path.join(path.parse(path.resolve(entry)).dir, filename)
+                setMapMock(p, options, watchTarget);
+            });
+        });
+    }
+    // 对象类型entry
+    else if (Object.prototype.toString.call(options.webpackConfig.entry) === '[object Object]') {
+        for (let key in options.webpackConfig.entry) {
+            let arrJs = options.webpackConfig.entry[key];
+            arrJs = arrJs instanceof Array ? arrJs : [arrJs];
+            arrJs = arrJs.filter(js => js.indexOf('node_modules') === -1);
+            if (!arrJs || !arrJs.length) continue;
+            for (let i = 0; i < arrJs.length; i++) {
+                const watchTarget = path.resolve(path.join(path.parse(arrJs[i]).dir, options.filename));
+                arrHtmlPlugins.forEach(p => {
+                    if (!p.options.chunks.includes(key)) return;
+                    setMapMock(p, options, watchTarget);
+                });
+            }
+        }
+    } else if (Object.prototype.toString.call(options.webpackConfig.entry) === '[object Promise]') {
+        // TODO 即将支持
+    } else if (typeof options.webpackConfig.entry === 'function') {
+        // TODO 即将支持
+    }
+}
+
+/**
+ * 监听mock配置文件
+ */
+function watchMockFile(options) {
     // 监听回调函数
     const watchCallback = () => {
         // 让浏览器刷新
         if (options.server) {
             options.server.sockWrite(options.server.sockets, 'content-changed');
         } else {
-            console.log('对不起，您没有传入webpack-dev-server对象，无法使用浏览器自动刷新功能！');
+            console.log(chalk.red('对不起，您没有传入webpack-dev-server对象，无法使用浏览器自动刷新功能！'));
         }
     }
-    // mock文件与html文件的映射
-    options.mapMock = {};
-    // 获取所有的HtmlWebpackPlugin实例
-    const arrHtmlPlugins = options.webpackConfig.plugins.filter(item => item instanceof HtmlWebpackPlugin);
-    // 监听mock文件变化，以入口文件的目录作为根路径
-    if (options.webpackConfig) {
-        const filename = options.filename.substr(1);
-        if (typeof options.webpackConfig.entry === 'string') {
-            arrHtmlPlugins.forEach(p => {
-              const watchTarget = path.join(path.parse(path.resolve(options.webpackConfig.entry)).dir, filename);
-                if (fe.existsSync(watchTarget)) {
-                  const stat = fs.statSync(watchTarget);
-                  options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
-                  options.mapMock[p.options.filename] = stat.isFile() ? options.mapMock[p.options.filename].push(watchTarget) : options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
-                }
-            });
-        } else if (options.webpackConfig.entry instanceof Array) {
-            arrHtmlPlugins.forEach(p => {
-                options.webpackConfig.entry.forEach(entry => {
-                  const watchTarget = path.join(path.parse(path.resolve(entry)).dir, filename);
-                  if (fe.existsSync(watchTarget)) {
-                    options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
-                    const stat = fs.statSync(watchTarget);
-                    options.mapMock[p.options.filename] = stat.isFile() ? options.mapMock[p.options.filename].push(watchTarget) : options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
-                      // if () {
-                      //     options.mapMock[p.options.filename].push(path.join(path.parse(path.resolve(entry)).dir, filename));
-                      // } else {
-                      //     options.mapMock[p.options.filename] = [ path.join(path.parse(path.resolve(entry)).dir, filename) ];
-                      // }
-                  }
-                });
-            });
-        } else if (Object.prototype.toString.call(options.webpackConfig.entry) === '[object Object]') {
-            for (let key in options.webpackConfig.entry) {
-                let arrJs = options.webpackConfig.entry[key];
-                arrJs = arrJs instanceof Array ? arrJs : [arrJs];
-                arrJs = arrJs.filter(js => js.indexOf('node_modules') === -1);
-                if (arrJs && arrJs.length) {
-                    for (let i = 0; i < arrJs.length; i++) {
-                        const watchTarget = path.resolve(path.join(path.parse(arrJs[i]).dir, options.filename));
-                        if (fe.existsSync(watchTarget)) {
-                            arrHtmlPlugins.forEach(p => {
-                                if (p.options.chunks.indexOf(key) !== -1) {
-                                    const stat = fs.statSync(watchTarget);
-                                    options.mapMock[p.options.filename] = options.mapMock[p.options.filename] || [];
-                                    options.mapMock[p.options.filename] = stat.isFile() ? options.mapMock[p.options.filename].push(watchTarget) : options.mapMock[p.options.filename].concat(fs.readdirSync(watchTarget).map(file => path.join(watchTarget, file)));
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        throw new Error('请传入webpack配置');
-    }
-
-    // 监听mock文件
     [...new Set(Object.values(options.mapMock).reduce((previousValue, currentValue) => ([...previousValue, ...currentValue]), []))].forEach(watchTarget => {
+        // 无视.js和.node以外的任何文件
+        if (!['.js', '.node'].includes(path.parse(watchTarget).ext)) return;
         const stat = fs.statSync(watchTarget);
         if (stat.isFile()) {
             fs.watchFile(watchTarget, watchCallback);
@@ -101,6 +101,23 @@ function initialize(options) {
             fs.watch(watchTarget, watchCallback);
         }
     });
+}
+
+/**
+ * 初始化mock中间件
+ * @param options 中间件配置
+ */
+function initialize(options) {
+    // 默认要监听的文件或路径
+    options.filename = options.filename || '/mock';
+    // mock文件与html文件的映射
+    options.mapMock = {};
+    // 获取所有的HtmlWebpackPlugin实例
+    const arrHtmlPlugins = options.webpackConfig.plugins.filter(item => item instanceof HtmlWebpackPlugin);
+    // 建立webpack.entry和mock配置文件的映射关系
+    webpackEntryToMapMock(options);
+    // 监听mock文件
+    watchMockFile(options);
 }
 
 function serviceMockMiddleware(options = {

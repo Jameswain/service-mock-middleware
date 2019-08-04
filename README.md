@@ -21,13 +21,26 @@
 
 
 <h2 align="center">安装</h2>
-
 ``` shell
 npm install service-mock-middleware --save-dev
 ```
+<h2 align="center">options</h2>
+`options`使用`service-mock-middleware`中间件时的一些必传和可选参数，通过可选参数可以修改中间件的一些默认行为。`options`是一个`object`对象，使用例子如下：
+
+```javascript
+const serviceMockMiddleware = require('service-mock-middleware');
+const options = { webpackConfig, server };
+const smw = serviceMockMiddleware(options)
+```
+
+| 参数名称        | 是否必传 | 描述                                                         |
+| --------------- | -------- | ------------------------------------------------------------ |
+| `webpackConfig` | **是**   | webpack配置                                                  |
+| `server`        | **是**   | webpack-dev-server对象，用于控制浏览器刷新                   |
+| `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
+
 <h2 align="center">使用</h2>
 <h4 align="left">1、在webpack.config.js配置文件中使用中间件</h4>
-
 ``` javascript
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -56,8 +69,8 @@ module.exports = {
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用service-mock-middleware中间件
             app.use(serviceMockMiddleware({ 
-              webpackConfig: module.exports, // webpack配置
-              server 	 // webpack-dev-server对象，用于控制浏览器刷新
+              webpackConfig: module.exports, // 必传参数，webpack配置
+              server 	 // 必传参数，webpack-dev-server对象，用于控制浏览器刷新
             }));
         }
     },
@@ -78,7 +91,6 @@ module.exports = {
 }
 ```
 <h4 align="left">2、webpack入口文件的同级目录下创建mock配置文件</h4>
-
 ![001](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/001.jpg) 
 
 ``` javascript
@@ -132,7 +144,6 @@ module.exports = {
 ```
 
 <h4 align="left">3、发送ajax请求，获取mock数据</h4>
-
 ``` javascript
 // example/src/demo1/index.js
 import $ from '../common/ajax'
