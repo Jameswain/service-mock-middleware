@@ -178,7 +178,6 @@ const smw = serviceMockMiddleware(options)
 | `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
 
 <h2 align="center">mock配置说明</h2>
-
 * mock配置文件是通过`key`和`value`形式配置，`key`就是你要请求的`URL`，`value`只支持两种类型：`object`和`function`
 * `function(params, req, res)`形式的`value`最为灵活，它传入三个参数供你使用：
   * `params`：这个就是你`ajax`请求时传入的参数
@@ -187,7 +186,6 @@ const smw = serviceMockMiddleware(options)
 * `enable`：mock开关，放在最外层可以控制整个文件的开关，放在单个`URL`的`value`里可以控制单个接口的mock开关
 
 <h2 align="center">运行例子</h2>
-
 在源码仓库中，有一些例子，可以把这个源码仓库克隆到本地，运行起来，看一下效果，具体操作如下：
 
 ``` javascript
@@ -200,7 +198,6 @@ npm run example04				// 运行例子04，访问http://localhost:8080
 ```
 
 <h3>demo02：使用mockjs模块和自定义模块进行mock数据</h3>
-
 **1、在webpack配置文件中使用mock中间件：**
 
 ```javascript
@@ -245,10 +242,17 @@ module.exports = {
 
 * [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/index.js)
 * [example/src/demo01/mock/data.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/data.js)
+* 在`index.js`文件中引入了`mockjs`模块和`path`模块进行生成mock数据，并返回；实际上你可以在mock配置文件中引入任何你需要使用到的第三方数据进行数据mock。
 
 **3、在第一个入口文件中发送ajax请求：**
 
-![image-20190804171953450](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804171953450.png)
+```javascript
+import $ from '../common/ajax'
+$.get('/search_subjects', res => {
+    console.log('/search_subjects =>', JSON.parse(res));
+});
+$.get('/api/demo');
+```
 
 * [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/index.js)
 
@@ -258,8 +262,35 @@ module.exports = {
 
 `demo02/mock`文件夹中有三个mock配置文件，其中`auth.js`文件是空的，`service-mock-middleware`会自动过滤掉这种文件，`service-mock-middleware`中间件会自动识别`index.js`和`player.js`文件中的`mock`数据配置，这种`mock`配置文件拆分比较适合在大型PC项目中进行使用。
 
-* [example/src/demo02/mock/auth.js](example/src/demo02/mock/auth.js)
-* [example/src/demo02/mock/index.js](example/src/demo02/mock/index.js)
-* [example/src/demo02/mock/player.js](example/src/demo02/mock/player.js)
+* [example/src/demo02/mock/auth.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo02/mock/auth.js)
+* [example/src/demo02/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo02/mock/index.js)
+* [example/src/demo02/mock/player.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo02/mock/player.js)
 
-**5、**
+**5、在第二个入口文件中发送ajax请求：**
+
+```javascript
+import $ from '../common/ajax'
+console.log('main.js.....');
+$.get('/api/user');
+$.get('/video_list');
+$.get('/video_info');
+```
+
+* [example/src/demo02/main.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo02/main.js)
+
+**6、启动命令查看效果：**
+
+![image-20190804175953818](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804175953818.png)
+
+浏览器访问`http://localhost:8080/` 查看运行效果，你可以尝试修改mock配置文件，观察返回数据的结果。
+
+
+
+<h3>demo03：利用req.app实现增删改查mock</h3>
+
+
+
+
+
+
+

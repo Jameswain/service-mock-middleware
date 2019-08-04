@@ -173,7 +173,7 @@ function serviceMockMiddleware(options = {
                     let mockdata = mockjson[url.parse(req.url).pathname];
                     if (typeof mockdata === 'function') { // 如果是一个函数，则执行函数，并传入请求参数和req，res对象
                         try {
-                            mockdata = mockdata(req.query, req, res);
+                            mockdata = mockdata({ ...req.query, ...req.body }, req, res);
                         } catch (e) {
                             const pathname = url.parse(req.url).pathname;
                             console.error(chalk.red(pathname, '函数语法错误，请检测您的mock文件：', mapUrlByFile[pathname]));
