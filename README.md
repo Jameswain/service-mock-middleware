@@ -24,24 +24,13 @@
 ``` shell
 npm install service-mock-middleware --save-dev
 ```
-<h2 align="center">options</h2>
-`options`使用`service-mock-middleware`中间件时的一些必传和可选参数，通过可选参数可以修改中间件的一些默认行为。`options`是一个`object`对象，使用例子如下：
-
-```javascript
-const serviceMockMiddleware = require('service-mock-middleware');
-const options = { webpackConfig, server };
-const smw = serviceMockMiddleware(options)
-```
-
-| 参数名称        | 是否必传 | 描述                                                         |
-| --------------- | -------- | ------------------------------------------------------------ |
-| `webpackConfig` | **是**   | webpack配置                                                  |
-| `server`        | **是**   | webpack-dev-server对象，用于控制浏览器刷新                   |
-| `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
 
 <h2 align="center">使用</h2>
-<h4 align="left">1、在webpack.config.js配置文件中使用中间件</h4>
+<h3 align="left">demo01：Object类型entry</h3>
+**1、在webpack.config.js配置文件中使用中间件：**
+
 ``` javascript
+// example/webpack.config01.js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const bodyParser = require('body-parser');	
@@ -90,11 +79,14 @@ module.exports = {
     ]
 }
 ```
-<h4 align="left">2、webpack入口文件的同级目录下创建mock配置文件</h4>
+[example/webpack.config01.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/webpack.config01.js)
+
+**2、webpack入口文件的同级目录下创建mock配置文件：**
+
 ![001](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/001.jpg) 
 
 ``` javascript
-// example/src/demo1/mock/index.js      mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
+// example/src/demo01/mock/index.js      mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
 module.exports = {
     enable: true,              // 全局mock开关，如果不写，默认为开启状态，如果设置为false，表示关闭整个配置文件的mock配置，等服务端的接口准备ready后，可以将这个字段设置为false
     '/search_subjects': (params, req, res) => {
@@ -143,9 +135,12 @@ module.exports = {
 }
 ```
 
-<h4 align="left">3、发送ajax请求，获取mock数据</h4>
+[example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo01/mock/index.js)
+
+**3、发送ajax请求，获取mock数据：**
+
 ``` javascript
-// example/src/demo1/index.js
+// example/src/demo01/index.js
 import $ from '../common/ajax'
 $.get('/search_subjects', res => {
     console.log('/search_subjects =>', res);
@@ -153,24 +148,118 @@ $.get('/search_subjects', res => {
 $.get('/api/demo');
 ```
 
+[example/src/demo01/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/index.js)
+
+浏览器输入：`http://localhost:8080/index.html` 和 `http://localhost:8080/main.html` 查看效果
+
 **运行效果：**
 ![a002](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/002.jpg)
 
-* 通过运行结果，我们可以发现 **/search_subjects** 接口走的就是我们编写的mock数据，而 **/api/demo** 的mock开关没有打开，所以没有走mock数据，而且mock配置文件每次改变保存浏览器都会实时刷新。
-![003](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/003.jpg)​
-
-* 如果你的ajax请求走的是mock数据，它的response会多了一个service-mock-middleware的响应头告诉你，你这个http请求走的是mock数据，以便于区分。
-![004](https://raw.githubusercontent.com/Jameswain/service-mock-middleware/master/example/imgs/004.jpg)
+* 通过运行结果，我们可以发现 **/search_subjects** 接口走的就是我们编写的mock数据，而 **/api/demo** 的mock开关没有打开，所以没有走mock数据，而且mock配置文件每次改变保存浏览器都会自动刷新。
+![003](https://raw.githubusercontent.com/Jameswain/IMG/master/20190804160457.jpg)
+* 如果你的ajax请求走的是mock数据，它的`response`会多了一个`service-mock-middleware`的响应头告诉你，你这个http请求走的是mock数据，`service-mock-middleware-file`响应头告诉你匹配的mock配置文件。
+![004](https://raw.githubusercontent.com/Jameswain/IMG/master/20190804160803.jpg)
 * 不仅如此，我们的终端(Terminal)也会有一个表格告诉你，你当前访问的接口mock的开关状态
 
+
+<h2 align="center">options</h2>
+`options`使用`service-mock-middleware`中间件时的一些必传和可选参数，通过可选参数可以修改中间件的一些默认行为。`options`是一个`object`对象，使用例子如下：
+
+```javascript
+const serviceMockMiddleware = require('service-mock-middleware');
+const options = { webpackConfig, server };
+const smw = serviceMockMiddleware(options)
+```
+
+| 参数名称        | 是否必传 | 描述                                                         |
+| --------------- | -------- | ------------------------------------------------------------ |
+| `webpackConfig` | **是**   | webpack配置                                                  |
+| `server`        | **是**   | webpack-dev-server对象，用于控制浏览器刷新                   |
+| `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
+
+<h2 align="center">mock配置说明</h2>
+
+* mock配置文件是通过`key`和`value`形式配置，`key`就是你要请求的`URL`，`value`只支持两种类型：`object`和`function`
+* `function(params, req, res)`形式的`value`最为灵活，它传入三个参数供你使用：
+  * `params`：这个就是你`ajax`请求时传入的参数
+  * `req`：`request`对象，你可以使用它获取任何请求相关的信息，你可以通过`req.app`获取`application`对象将一些数据存储到`application`里，完成一个服务级的增、删、改、查。
+  * `res`：`response`对象，你可以使用设置一些响应头等操作
+* `enable`：mock开关，放在最外层可以控制整个文件的开关，放在单个`URL`的`value`里可以控制单个接口的mock开关
+
 <h2 align="center">运行例子</h2>
+
 在源码仓库中，有一些例子，可以把这个源码仓库克隆到本地，运行起来，看一下效果，具体操作如下：
 
 ``` javascript
 git clone https://github.com/Jameswain/service-mock-middleware.git   // 克隆源码到本地磁盘
-npm install				    // 安装依赖
-npm run example1		    // 运行例子1，访问http://localhost:8080，http://localhost:8080/main.html
-npm run example2		    // 运行例子2，访问http://localhost:8080
-npm run example3		    // 运行例子3，访问http://localhost:8080
-
+npm install				      // 安装依赖
+npm run example01		    // 运行例子01，访问http://localhost:8080
+npm run example02		    // 运行例子02，访问http://localhost:8080
+npm run example03		    // 运行例子03，访问http://localhost:8080
+npm run example04				// 运行例子04，访问http://localhost:8080
 ```
+
+<h3>demo02：使用mockjs模块和自定义模块进行mock数据</h3>
+
+**1、在webpack配置文件中使用mock中间件：**
+
+```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const bodyParser = require('body-parser');
+const serviceMockMiddleware = require('../middleware');
+
+module.exports = {
+    mode: 'development',
+    entry: [
+        path.resolve(__dirname, 'src', 'demo01', 'index.js'),   // 必须使用绝对路径
+        path.resolve(__dirname, 'src/demo02/main.js')           // 必须使用绝对路径
+    ],
+    output: {
+        filename: '[name].[hash].js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    devtool: 'inline-source-map',
+    devServer: {
+        /**
+         * 提供在服务器内部所有其他中间件之前执行自定义中间件的能力。
+         * @param app
+         * @param server
+         */
+        before(app, server) {
+            // POST 创建 application/x-www-form-urlencoded 编码解析，POST参数解析
+            app.use(bodyParser.urlencoded({ extended: false }));
+            // 使用mock中间件
+            app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
+        }
+    },
+    plugins: [
+        new HtmlWebpackPlugin()
+    ]
+}
+```
+
+**2、在第一个入口文件对应的mock文件夹中进行mock数据配置：**
+
+![image-20190804164554113](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804164554113.png)
+
+* [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/index.js)
+* [example/src/demo01/mock/data.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/data.js)
+
+**3、在第一个入口文件中发送ajax请求：**
+
+![image-20190804171953450](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804171953450.png)
+
+* [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/index.js)
+
+**4、在第二个入口文件对应的mock文件夹中进行mock数据配置：**
+
+![image-20190804172359682](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804172359682.png)
+
+`demo02/mock`文件夹中有三个mock配置文件，其中`auth.js`文件是空的，`service-mock-middleware`会自动过滤掉这种文件，`service-mock-middleware`中间件会自动识别`index.js`和`player.js`文件中的`mock`数据配置，这种`mock`配置文件拆分比较适合在大型PC项目中进行使用。
+
+* [example/src/demo02/mock/auth.js](example/src/demo02/mock/auth.js)
+* [example/src/demo02/mock/index.js](example/src/demo02/mock/index.js)
+* [example/src/demo02/mock/player.js](example/src/demo02/mock/player.js)
+
+**5、**

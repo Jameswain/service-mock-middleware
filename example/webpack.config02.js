@@ -6,8 +6,8 @@ const serviceMockMiddleware = require('../middleware');
 module.exports = {
     mode: 'development',
     entry: [
-        path.resolve(__dirname, 'src', 'demo01', 'index.js'),
-        path.resolve(__dirname, 'src/demo02/main.js')
+        path.resolve(__dirname, 'src', 'demo01', 'index.js'),   // 必须使用绝对路径
+        path.resolve(__dirname, 'src/demo02/main.js')           // 必须使用绝对路径
     ],
     output: {
         filename: '[name].[hash].js',
