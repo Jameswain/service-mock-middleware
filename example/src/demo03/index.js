@@ -53,6 +53,16 @@ function edit(id) {
     });
 }
 
+/**
+ * 清空
+ */
+function clear() {
+    $.get(`/api/clear`, function (res) {
+        console.log(res);
+        list();
+    });
+}
+
 function body() {
     document.querySelector('body').addEventListener('click', function (e) {
         const arr = e.target.id.split('-');
@@ -61,14 +71,14 @@ function body() {
             del(arr[1])
         } else if (arr[0] === 'edit') {
             edit(arr[1]);
+        } else if (arr[0] === 'clear') {
+            clear();
         }
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', function () {// 删除
     add();
     body();
     list();
-    
 });

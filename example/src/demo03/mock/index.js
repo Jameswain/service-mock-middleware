@@ -10,8 +10,11 @@ module.exports = {
      * @param rep 响应对象，通过它设置响应信息
      */
     '/api/add': (params, req, res) => {
+        // 从req.app中获取数据
         const arrRoles = req.app.get(ARR_ROLES) || [];
+        // 角色数组前边添加数据
         arrRoles.unshift(params);
+        // 将添加的数据保存到req.app里
         req.app.set(ARR_ROLES, arrRoles);
         return {
             status: 0,
@@ -56,5 +59,18 @@ module.exports = {
     '/api/list': (params, req, res) => {
         const arrRoles = req.app.get(ARR_ROLES);
         return arrRoles;
+    },
+    /**
+     * 清空
+     * @param params
+     * @param req
+     * @param res
+     */
+    '/api/clear': (params, req, res) => {
+        req.app.set(ARR_ROLES, []);
+        return {
+            status: 0,
+            message: '清空成功'
+        }
     }
 }
