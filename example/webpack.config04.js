@@ -18,7 +18,7 @@ module.exports = {
          * @param server
          */
         before(app, server) {
-            // 创建 application/json parser（POST请求） 解析器中间件：它不把post请求参数放在req.body中
+            // 创建 application/json（POST请求）parser 解析器中间件：它把post请求体解析成json放在req.body中
             app.use(bodyParser.json());
             // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
             app.use(bodyParser.urlencoded({ extended: false }));
