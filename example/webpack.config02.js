@@ -21,7 +21,9 @@ module.exports = {
          * @param server
          */
         before(app, server) {
-            // POST 创建 application/x-www-form-urlencoded 编码解析，POST参数解析
+            // 创建 application/json parser（POST请求） 解析器中间件：它不把post请求参数放在req.body中
+            app.use(bodyParser.json());
+            // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用mock中间件
             app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));

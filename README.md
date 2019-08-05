@@ -54,7 +54,9 @@ module.exports = {
          * @param server
          */
         before(app, server) {
-            // POST 创建 application/x-www-form-urlencoded 编码解析，用于POST请求参数解析
+          // 创建 application/json parser（POST请求） 解析器中间件：它不把post请求参数放在req.body中
+            app.use(bodyParser.json());
+            // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用service-mock-middleware中间件
             app.use(serviceMockMiddleware({ 
@@ -79,7 +81,7 @@ module.exports = {
     ]
 }
 ```
-[example/webpack.config01.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/webpack.config01.js)
+* [example/webpack.config01.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/webpack.config01.js)
 
 **2、webpack入口文件的同级目录下创建mock配置文件：**
 
@@ -135,7 +137,7 @@ module.exports = {
 }
 ```
 
-[example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo01/mock/index.js)
+* [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo01/mock/index.js)
 
 **3、发送ajax请求，获取mock数据：**
 
@@ -148,7 +150,7 @@ $.get('/search_subjects', res => {
 $.get('/api/demo');
 ```
 
-[example/src/demo01/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/index.js)
+* [example/src/demo01/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/index.js)
 
 浏览器输入：`http://localhost:8080/index.html` 和 `http://localhost:8080/main.html` 查看效果
 
@@ -224,7 +226,9 @@ module.exports = {
          * @param server
          */
         before(app, server) {
-            // POST 创建 application/x-www-form-urlencoded 编码解析，POST参数解析
+          // 创建 application/json parser（POST请求） 解析器中间件：它不把post请求参数放在req.body中
+            app.use(bodyParser.json());
+            // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用mock中间件
             app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
@@ -288,9 +292,320 @@ $.get('/video_info');
 
 <h3>demo03：利用req.app实现增删改查mock</h3>
 
+​		在开发中经常有需要增删改查的需求，但是如果此时，服务端的接口还没有出来怎么办？那么使用`req.app`可以帮助你实现一个服务层级的增删改查。
 
+**1、在webpack的配置文件中使用service-mock-middleware中间件：**
 
+```javascript
+// example/webpack.config03.js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const bodyParser = require('body-parser');
+const serviceMockMiddleware = require('service-mock-middleware');
 
+module.exports = {
+    mode: 'development',
+    entry: path.resolve(__dirname, 'src', 'demo03', 'index.js'),
+    output: {
+        filename: '[name].[hash].js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    devtool: 'inline-source-map',
+    devServer: {
+        /**
+         * 提供在服务器内部所有其他中间件之前执行自定义中间件的能力。
+         * @param app
+         * @param server
+         */
+        before(app, server) {
+            // 创建 application/json parser（POST请求） 解析器中间件：它不把post请求参数放在req.body中
+            app.use(bodyParser.json());
+            // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
+            app.use(bodyParser.urlencoded({ extended: false }));
+            // 使用mock中间件
+            app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
+        }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname,'src/common/index.html'),          // html模版
+            filename: path.resolve(__dirname, 'dist', 'index.html'),            // html输出位置
+        })
+    ]
+}
+```
 
+* [example/webpack.config03.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/webpack.config03.js)
 
+**2、在mock配置文件中实现增删改查：**
+
+```javascript
+// example/src/demo03/mock/index.js
+//  mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
+const ARR_ROLES = 'ARR_ROLES';
+module.exports = {
+    /**
+     * 增
+     * @param params 请求参数
+     * @param req 请求对象，通过它获取请求相关信息
+     * @param req.app 表示服务级范围，app.set存储数据到服务上，服务没有关闭数据就一直在。
+     * @param rep 响应对象，通过它设置响应信息
+     */
+    '/api/add': (params, req, res) => {
+        // 从req.app中获取数据
+        const arrRoles = req.app.get(ARR_ROLES) || [];
+        // 角色数组前边添加数据
+        arrRoles.unshift(params);
+        // 将添加的数据保存到req.app里
+        req.app.set(ARR_ROLES, arrRoles);
+        return {
+            status: 0,
+            message: '增加成功'
+        };
+    },
+    /**
+     * 删
+     * @param params 请求参数
+     * @param req 请求对象，通过它获取请求相关信息
+     * @param rep 响应对象，通过它设置响应信息
+     */
+    '/api/del': ({ id }, { app }, res) => {
+        const arrRoles = app.get(ARR_ROLES);
+        arrRoles.splice(id, 1);
+        app.set(ARR_ROLES);
+        return {
+            status: 0,
+            message: '删除成功'
+        }
+    },
+    /**
+     * gai改
+     * @param id
+     * @param app
+     */
+    '/api/edit': (params, { app }) => {
+        const arrRoles = app.get(ARR_ROLES);
+        arrRoles[params.id] = params;
+        app.set(ARR_ROLES);
+        return {
+            status: 0,
+            message: '修改成功'
+        }
+    },
+    /**
+     * 查
+     * @param params 请求参数
+     * @param req 请求对象，通过它获取请求相关信息
+     * @param rep 响应对象，通过它设置响应信息
+     */
+    '/api/list': (params, req, res) => {
+        const arrRoles = req.app.get(ARR_ROLES) || [];
+        return arrRoles;
+    },
+    /**
+     * 清空
+     * @param params
+     * @param req
+     * @param res
+     */
+    '/api/clear': (params, req, res) => {
+        req.app.set(ARR_ROLES, []);
+        return {
+            status: 0,
+            message: '清空成功'
+        }
+    }
+}
+```
+
+* [example/src/demo03/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo03/mock/index.js)
+
+**3、在模版文件中添加两个按钮和一个表格元素：**
+
+```html
+<!--
+example/src/common/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+    <h1>service-mock-middleware</h1>
+    <p>
+        <button id="add">增加</button>
+        <button id="clear">清空</button>
+    </p>
+    <p>
+        <table border="1" cellpadding="0" cellspacing="0">
+            <tbody>
+            </tbody>
+        </table>
+    </p>
+</body>
+</html>
+```
+
+* [example/src/common/index.html](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/common/index.html)
+
+**4、在mock文件夹中添加一个data.json文件，里边存放一部分mock数据：**
+
+```json
+{
+  "arrRoles": [
+    {
+      "name": "孙膑",
+      "cover": "https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=df1fde4da5d3fd1f3209a538004f25ce/aa18972bd40735fabb5903da93510fb30f240823.jpg"
+    },
+    {
+      "name": "庞涓",
+      "cover": "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=a9f5340cb2096b63851959523c328733/30adcbef76094b360f1ce8ceafcc7cd98d109d03.jpg"
+    },
+    {
+      "name": "苏秦",
+      "cover": "https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=4af0c8374ea7d933bba8e3719d4bd194/86d6277f9e2f07086d7bd823e524b899a901f293.jpg"
+    },
+    {
+      "name": "张仪",
+      "cover": "https://gss1.bdstatic.com/9vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=8325bce706d162d981ee651e21dfa950/242dd42a2834349b82169ca6c5ea15ce36d3be85.jpg"
+    },
+    {
+      "name": "王翦",
+      "cover": "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=dc207cda8ad6277fed12353a18381f63/7acb0a46f21fbe0930422b7566600c338744adb7.jpg"
+    },
+    {
+      "name": "李牧",
+      "cover": "https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=ba358f12f6f2b211e02e824cfa806511/ae51f3deb48f8c543ee32c4e37292df5e0fe7f9b.jpg"
+    },
+    {
+      "name": "商鞅",
+      "cover": "https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=0062472cc78065387feaa311a7dca115/95eef01f3a292df5738f6e77b1315c6034a87300.jpg"
+    },
+    {
+      "name": "李斯",
+      "cover": "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=571d776dc68065387feaa311a7dda115/95eef01f3a292df524f05e36b0315c6034a873e6.jpg"
+    },
+    {
+      "name": "吕不韦",
+      "cover": "https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=f90021bd306d55fbc1c671245d234f40/11385343fbf2b2114c84c82dc78065380cd78e2f.jpg"
+    },
+    {
+      "name": "乐毅",
+      "cover": "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=63f40882a5ec8a13101a50e2c7029157/5ab5c9ea15ce36d3e1e1af5d36f33a87e850b1f1.jpg"
+    },
+    {
+      "name": "白起",
+      "cover": "https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=9aa4f3880f3b5bb5bad727fc06d2d523/2e2eb9389b504fc267f24226e9dde71190ef6d60.jpg"
+    },
+    {
+      "name": "田单",
+      "cover": "https://gss2.bdstatic.com/-fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=8719fe71d054564ee165e33b83df9cde/d53f8794a4c27d1e1c56f9a616d5ad6eddc43864.jpg"
+    }
+  ]
+}
+```
+
+* [example/src/demo03/mock/data.json](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo03/mock/data.json)
+
+**5、在入口文件中编写增删改查逻辑：**
+
+```javascript
+import $ from '../common/ajax'
+import { arrRoles } from './mock/data'
+
+/**
+ * 查询
+ */
+function list() {
+    $.getJSON('/api/list', arrRoles => {
+        const arrHtmls = arrRoles.map(({ name, cover }, i) => (`
+        <tr>
+          <td align="center">${i + 1}</td>
+          <td width="60" align="center">${name}</td>
+          <td><img src="${cover}" alt=""/></td>
+          <td width="100" align="center">
+            <button id="del-${i}" val="${i}">删除</button>
+            <button id="edit-${i}" val="${i}">修改</button>
+          </td>
+        </tr>
+      `));
+        document.querySelector('tbody').innerHTML = arrHtmls.join('');
+    });
+}
+
+/**
+ * 添加
+ */
+function add() {
+    document.querySelector('#add').addEventListener('click', function () {
+        $.post('/api/add?age=28', arrRoles[parseInt(Math.random() * arrRoles.length)], function (res) {
+            console.log(res);
+            list();
+        });
+    });
+}
+
+/**
+ * 删除
+ */
+function del(id) {
+    $.get(`/api/del?id=${id}`, function (res) {
+        console.log(res);
+        list();
+    });
+}
+
+/**
+ * 修改
+ */
+function edit(id) {
+    $.post(`/api/edit`, { id, ...arrRoles[parseInt(Math.random() * arrRoles.length)] } , function (res) {
+        console.log(res);
+        list();
+    });
+}
+
+/**
+ * 清空
+ */
+function clear() {
+    $.get(`/api/clear`, function (res) {
+        console.log(res);
+        list();
+    });
+}
+
+function body() {
+    document.querySelector('body').addEventListener('click', function (e) {
+        const arr = e.target.id.split('-');
+        console.log(arr)
+        if (arr[0] === 'del') {
+            del(arr[1])
+        } else if (arr[0] === 'edit') {
+            edit(arr[1]);
+        } else if (arr[0] === 'clear') {
+            clear();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {// 删除
+    add();
+    body();
+    list();
+});
+```
+
+* [example/src/demo03/index.js](https://github.com/Jameswain/service-mock-middleware/blob/master/example/src/demo03/index.js)
+
+**6、运行命令，查看效果：**
+
+```shell
+npm run example03    //浏览器访问：http://localhost:8080/index.html
+```
+
+* [package.json](https://github.com/Jameswain/service-mock-middleware/blob/master/package.json)
 

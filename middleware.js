@@ -123,7 +123,7 @@ function initialize(options) {
 function serviceMockMiddleware(options = {
     filename: 'mock',       // mock配置文件名称
     webpackConfig: null,    // webpack配置
-    server: null    // webpack-dev-server 对象
+    server: null            // webpack-dev-server 对象
 }) {
     // 初始化中间件，监听mock文件目录或文件
     initialize(options);

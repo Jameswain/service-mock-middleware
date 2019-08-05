@@ -1,5 +1,4 @@
 //  mock配置文件，key就是接口的URL地址，value可以是对象，或者函数，函数更灵活，函数有三个参数，分别是：请求参数，request对象，response对象
-const { arrNames, arrCovers } = require('./data');
 const ARR_ROLES = 'ARR_ROLES';
 module.exports = {
     /**
@@ -57,7 +56,7 @@ module.exports = {
      * @param rep 响应对象，通过它设置响应信息
      */
     '/api/list': (params, req, res) => {
-        const arrRoles = req.app.get(ARR_ROLES);
+        const arrRoles = req.app.get(ARR_ROLES) || [];
         return arrRoles;
     },
     /**
