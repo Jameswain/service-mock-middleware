@@ -291,7 +291,6 @@ $.get('/video_info');
 
 
 <h3>demo03：利用req.app实现增删改查mock</h3>
-
 ​		在开发中经常有需要增删改查的需求，但是如果此时，服务端的接口还没有出来怎么办？那么使用`req.app`可以帮助你实现一个服务层级的增删改查。
 
 **1、在webpack的配置文件中使用service-mock-middleware中间件：**
