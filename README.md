@@ -608,4 +608,4 @@ npm run example03    //浏览器访问：http://localhost:8080/index.html
 
 * [package.json](https://github.com/Jameswain/service-mock-middleware/blob/master/package.json)
 
-![增删改查](https://github.com/Jameswain/IMG/blob/master/service-mock-middleware-demop03.gif)
+![增删改查](https://github.com/Jameswain/IMG/blob/master/service-mock-middleware-demop03.gif?raw=true)

@@ -108,6 +108,7 @@ function watchMockFile(options) {
  * @param options 中间件配置
  */
 function initialize(options) {
+    options.publicPath = options.publicPath || '';
     // 默认要监听的文件或路径
     options.filename = options.filename || '/mock';
     // mock文件与html文件的映射
@@ -123,7 +124,8 @@ function initialize(options) {
 function serviceMockMiddleware(options = {
     filename: 'mock',       // mock配置文件名称
     webpackConfig: null,    // webpack配置
-    server: null            // webpack-dev-server 对象
+    server: null,           // webpack-dev-server 对象
+    publicPath: ''          //
 }) {
     // 初始化中间件，监听mock文件目录或文件
     initialize(options);
@@ -132,7 +134,10 @@ function serviceMockMiddleware(options = {
             return next();
         } else {
             logUpdate.clear();
-            const pathname = new URL(req.headers.referer).pathname.substr(1) || 'index.html';
+		        let pathname = new URL(req.headers.referer).pathname;
+            pathname = ['.html', '.htm'].includes(path.parse(pathname).ext) ? pathname : 'index.html';
+		        pathname = pathname.replace(options.publicPath, '');
+		        pathname = pathname.indexOf('/') === 0 ? pathname.substr(1) : pathname;
             const table = new Table({head: ['请求路径', '开关[enable]'], style: {border: []}});
             if (options.mapMock[pathname]) {    // 有mock配置文件映射
                 // 请求路径对应的mock文件路径
