@@ -242,7 +242,7 @@ module.exports = {
 
 **2、在第一个入口文件对应的mock文件夹中进行mock数据配置：**
 
-![image-20190804164554113](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804164554113.png)
+![image-20190804164554113](https://raw.githubusercontent.com/Jameswain/IMG/master/image-20190804164554113.png)
 
 * [example/src/demo01/mock/index.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/index.js)
 * [example/src/demo01/mock/data.js](https://github.com/Jameswain/service-mock-middleware/blob/v1.2.1/example/src/demo01/mock/data.js)
@@ -262,7 +262,7 @@ $.get('/api/demo');
 
 **4、在第二个入口文件对应的mock文件夹中进行mock数据配置：**
 
-![image-20190804172359682](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804172359682.png)
+![image-20190804172359682](https://raw.githubusercontent.com/Jameswain/IMG/master/image-20190804172359682.png)
 
 `demo02/mock`文件夹中有三个mock配置文件，其中`auth.js`文件是空的，`service-mock-middleware`会自动过滤掉这种文件，`service-mock-middleware`中间件会自动识别`index.js`和`player.js`文件中的`mock`数据配置，这种`mock`配置文件拆分比较适合在大型PC项目中进行使用。
 
@@ -284,7 +284,7 @@ $.get('/video_info');
 
 **6、启动命令查看效果：**
 
-![image-20190804175953818](/Users/jameswain/Library/Application Support/typora-user-images/image-20190804175953818.png)
+![image-20190804175953818](https://raw.githubusercontent.com/Jameswain/IMG/master/image-20190804175953818.png)
 
 浏览器访问`http://localhost:8080/` 查看运行效果，你可以尝试修改mock配置文件，观察返回数据的结果。
 
