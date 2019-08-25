@@ -610,3 +610,20 @@ npm run example03    //浏览器访问：http://localhost:8080/index.html
 * [package.json](https://github.com/Jameswain/service-mock-middleware/blob/master/package.json)
 
 ![增删改查](https://github.com/Jameswain/IMG/blob/master/service-mock-middleware-demop03.gif?raw=true)
+
+
+
+<h3>demo04：配置filename修改mock配置文件的存放位置</h3>
+
+![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825232614.jpg)
+
+
+
+<h3>demo05：配置publicPath</h3>
+
+![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233050.jpg)
+
+![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233608.jpg)
+
+​		如果你的devServer配置了publicPath属性，那你就必须要把publicPath属性传给service-mock-middleware，否则会出现路径匹配失败。
+
