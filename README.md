@@ -1,4 +1,4 @@
-![build](https://img.shields.io/badge/build-passing-green.svg
+![](https://img.shields.io/badge/node-%3E%3D%206.0.0-brightgreen)
 ![dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-orange.svg)
 
 <div align="center">
