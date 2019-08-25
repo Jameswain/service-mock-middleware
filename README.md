@@ -1,4 +1,4 @@
-![build](https://img.shields.io/badge/build-passing-green.svg)
+![build](https://img.shields.io/badge/build-passing-green.svg
 ![dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-orange.svg)
 
 <div align="center">
@@ -21,7 +21,7 @@
 
 
 <h2 align="center">安装</h2>
-``` shell
+```shell
 npm install service-mock-middleware --save-dev
 ```
 
@@ -178,6 +178,7 @@ const smw = serviceMockMiddleware(options)
 | `webpackConfig` | **是**   | webpack配置                                                  |
 | `server`        | **是**   | webpack-dev-server对象，用于控制浏览器刷新                   |
 | `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
+| `publicPath`    | 否       | devServer.publicPath，当devServer配置中配置了publicPath字段后，就必须要把这个配置传给该中间件 |
 
 <h2 align="center">mock配置说明</h2>
 * mock配置文件是通过`key`和`value`形式配置，`key`就是你要请求的`URL`，`value`只支持两种类型：`object`和`function`

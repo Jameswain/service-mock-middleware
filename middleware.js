@@ -11,14 +11,6 @@ const semver = require('semver')
 const packageConfig = require('./package.json')
 const currentVersion = semver.clean(process.version);
 
-// TODO 需要做低版本升级提示
-if (!semver.satisfies(currentVersion, packageConfig.engines.node)) {
-    // node版本低于package.json配置的版本，提示用户升级node
-    console.log(chalk.red('😂 对不起，您的node版本过低，请升级您的node!'));
-    console.log(`您的版本：${chalk.red(currentVersion)}`);
-    console.log(`要求版本：${chalk.green(packageConfig.engines.node)}`);
-}
-
 /**
  * 设置index.html和mock文件映射关系
  * @param p - htmlWebpackPlugin对象
@@ -125,7 +117,7 @@ function serviceMockMiddleware(options = {
     filename: 'mock',       // mock配置文件名称
     webpackConfig: null,    // webpack配置
     server: null,           // webpack-dev-server 对象
-    publicPath: ''          //
+    publicPath: ''          // publicPath路径
 }) {
     // 初始化中间件，监听mock文件目录或文件
     initialize(options);

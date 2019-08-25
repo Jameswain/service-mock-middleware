@@ -7,7 +7,8 @@
     "example01": "webpack-dev-server --config example/webpack.config01.js",
     "example02": "webpack-dev-server --config example/webpack.config02.js",
     "example03": "webpack-dev-server --config example/webpack.config03.js",
-    "example04": "webpack-dev-server --config example/webpack.config04.js"
+    "example04": "webpack-dev-server --config example/webpack.config04.js",
+    "example05": "webpack-dev-server --config example/webpack.config05.js"
   },
   "repository": {
     "type": "git",
