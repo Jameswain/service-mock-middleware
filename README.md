@@ -187,6 +187,7 @@ const smw = serviceMockMiddleware(options)
   * `req`：`request`对象，你可以使用它获取任何请求相关的信息，你可以通过`req.app`获取`application`对象将一些数据存储到`application`里，完成一个服务级的增、删、改、查。
   * `res`：`response`对象，你可以使用设置一些响应头等操作
 * `enable`：mock开关，放在最外层可以控制整个文件的开关，放在单个`URL`的`value`里可以控制单个接口的mock开关
+* `delaytime`：接口延时时间，可以用于模拟接口响应慢的情况，单位：毫秒。
 
 <h2 align="center">运行例子</h2>
 在源码仓库中，有一些例子，可以把这个源码仓库克隆到本地，运行起来，看一下效果，具体操作如下：
@@ -614,13 +615,11 @@ npm run example03    //浏览器访问：http://localhost:8080/index.html
 
 
 <h3>demo04：配置filename修改mock配置文件的存放位置</h3>
-
 ![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825232614.jpg)
 
 
 
 <h3>demo05：配置publicPath</h3>
-
 ![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233050.jpg)
 
 ![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233608.jpg)

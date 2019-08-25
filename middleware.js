@@ -113,6 +113,26 @@ function initialize(options) {
     watchMockFile(options);
 }
 
+/**
+ * 返回mock数据给客户端
+ */
+function responseMockData(req, res, table, mockdata, mapUrlByFile) {
+    delete mockdata.enable;
+    table.push([url.parse(req.url).pathname, true]);
+    logUpdate(table.toString());
+    const runResponse = () => {
+        res.setHeader('service-mock-middleware', 'This is a mock data !');
+        res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
+        delete mockdata.delaytime;
+        res.json(mockdata).end();
+    }
+    if (mockdata.delaytime) {
+        setTimeout(runResponse, mockdata.delaytime);
+    } else {
+        runResponse();
+    }
+}
+
 function serviceMockMiddleware(options = {
     filename: 'mock',       // mock配置文件名称
     webpackConfig: null,    // webpack配置
@@ -181,17 +201,13 @@ function serviceMockMiddleware(options = {
                             console.error(url.parse(req.url).pathname + '函数没有返回值，返回内容为：' + mockdata);
                             return next();
                         } else if (mockdata.enable || mockdata.enable === void 0) {
-                            table.push([url.parse(req.url).pathname, true]);
-                            // console.log(table.toString());
-                            // console.log(url.parse(req.url).pathname + ' => enable：', mockdata.enable);
-                            delete mockdata.enable;
-                            res.setHeader('service-mock-middleware', 'This is a mock data !');
-                            res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
-                            res.json(mockdata).end();
-                            // res.end();
-                            setTimeout(() => {
-                                logUpdate(table.toString());
-                            },0)
+                            // table.push([url.parse(req.url).pathname, true]);
+                            // delete mockdata.enable;
+                            // res.setHeader('service-mock-middleware', 'This is a mock data !');
+                            // res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
+                            // res.json(mockdata).end();
+                            // logUpdate(table.toString());
+                            responseMockData(req, res, table, mockdata, mapUrlByFile);
                         } else {
                             table.push([url.parse(req.url).pathname, false]);
                             logUpdate(table.toString());
@@ -203,13 +219,7 @@ function serviceMockMiddleware(options = {
                             logUpdate(table.toString());
                             return next();
                         } else {
-                            table.push([url.parse(req.url).pathname, true]);
-                            delete mockdata.enable;
-                            res.setHeader('service-mock-middleware', 'This is a mock data !');
-                            res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
-                            res.json(mockdata);
-                            res.end();
-                            logUpdate(table.toString());
+                            responseMockData(req, res, table, mockdata, mapUrlByFile);
                         }
                     } else {
                         return next();

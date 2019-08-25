@@ -68,6 +68,8 @@ module.exports = {
     '/api/clear': (params, req, res) => {
         req.app.set(ARR_ROLES, []);
         return {
+            // 接口延时3000毫秒
+            delaytime: 3000,
             status: 0,
             message: '清空成功'
         }
