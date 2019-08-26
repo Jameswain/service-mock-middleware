@@ -620,9 +620,9 @@ npm run example03    //浏览器访问：http://localhost:8080/index.html
 
 
 <h3>demo05：配置publicPath</h3>
-![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233050.jpg)
+![2](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233050.jpg)
 
-![](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233608.jpg)
+![1](https://raw.githubusercontent.com/Jameswain/IMG/master/20190825233608.jpg)
 
 ​		如果你的devServer配置了publicPath属性，那你就必须要把publicPath属性传给service-mock-middleware，否则会出现路径匹配失败。
 
