@@ -1,10 +1,15 @@
 module.exports = {
     // enable: false,
-    '/api/user': (params, req, res) => {
-        // console.log('/api/user =>', params);
-        return {
-            name: 'Jameswain',
-            age: 18
-        }
-    }
+    '/main/list': ({ uid }) => ({
+        list: [
+            {
+                name: '宋江',
+                age: 25
+            },
+            {
+                name: '武松',
+                age: 25
+            }
+        ]
+    })
 }

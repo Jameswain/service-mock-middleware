@@ -29,9 +29,9 @@ module.exports = {
                 /** 必传参数：webpack-dev-server对象，用于控制浏览器刷新 */
                 server,
                 /** 可选参数：配置mock配置文件所在的文件夹路径或文件路径 */
-                // filename: '/mock-data/other.js'
+                filename: '/mock-data/other.js'
                 // filename: '/mock-data/'
-                filename: '/mock-data'
+                // filename: '/mock-data'
             }));
         }
     },

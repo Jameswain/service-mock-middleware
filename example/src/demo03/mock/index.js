@@ -36,7 +36,7 @@ module.exports = {
         }
     },
     /**
-     * gai改
+     * 改
      * @param id
      * @param app
      */
