@@ -18,7 +18,11 @@ const currentVersion = semver.clean(process.version);
  */
 function setMapMock(p, options, watchTarget) {
 	if (!fe.existsSync(watchTarget)) return;
-	options.mapMock[p.options.filename] = watchTarget;
+	if (options.mapMock[p.options.filename]) {
+		options.mapMock[p.options.filename].push(watchTarget);
+	} else {
+		options.mapMock[p.options.filename] = [watchTarget];
+	}
 }
 
 /**
@@ -108,12 +112,21 @@ function watchCallback(options) {
  */
 function readMockJson(options, callback) {
 	Object.keys(options.mapMock).forEach(key => {
-		let watchTarget = options.mapMock[key];
-		const stat = fs.statSync(watchTarget);
-		// 读取mock数据
-		if (stat.isFile()) watchTarget = path.parse(watchTarget).dir;
-		options.mapMockJson[key] = noCacheRequire(watchTarget, options);
-		if (typeof cllback === 'function') callback(watchTarget);
+		let arrWatchTarget = options.mapMock[key];
+		arrWatchTarget.forEach(watchTarget => {
+			const stat = fs.statSync(watchTarget);
+			// 读取mock数据
+			if (stat.isFile()) watchTarget = path.parse(watchTarget).dir;
+			if (options.mapMockJson[key]) {
+				options.mapMockJson[key] = {
+					...options.mapMockJson[key],
+					...noCacheRequire(watchTarget, options)
+				}
+			} else {
+				options.mapMockJson[key] = noCacheRequire(watchTarget, options)
+			}
+			if (typeof callback === 'function') callback(watchTarget);
+		});
 	});
 }
 
@@ -148,7 +161,7 @@ function responseMockData(req, res, table, mockdata, mapUrlByFile) {
 	table.push([pathname, true]);
 	logUpdate(table.toString());
 	const runResponse = () => {
-		res.setHeader('service-mock-middleware', 'This is a mock data !');
+		res.setHeader('service-mock-middleware-info', 'This is a mock data !');
 		res.setHeader('service-mock-middleware-file', mapUrlByFile[pathname]);
 		res.json(mockdata).end();
 	};
