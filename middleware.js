@@ -121,8 +121,13 @@ function responseMockData(req, res, table, mockdata, mapUrlByFile) {
     table.push([url.parse(req.url).pathname, true]);
     logUpdate(table.toString());
     const runResponse = () => {
+	      const urlObj = url.parse(req.headers.referer);
         res.setHeader('service-mock-middleware', 'This is a mock data !');
         res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
+	      res.setHeader('Access-Control-Allow-Origin', `${urlObj.protocol}//${urlObj.host}`);
+	      res.setHeader('Access-Control-Allow-Credentials', true);
+	      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
+	      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         delete mockdata.delaytime;
         res.json(mockdata).end();
     }
