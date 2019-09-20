@@ -29,7 +29,7 @@ module.exports = {
             app.use(serviceMockMiddleware({
                 /** 必传参数：webpack配置 */
                 webpackConfig: module.exports,
-                /** 必传参数：webpack-dev-server对象，用于控制浏览器刷新 */
+                /** 可选参数：webpack-dev-server对象，用于控制浏览器刷新 */
                 server,
                 /** 可选参数：devServer.publicPath，当devServer配置中配置了publicPath字段后，就必须要把这个配置传给该中间件*/
                 publicPath

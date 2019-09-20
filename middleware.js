@@ -76,11 +76,9 @@ function webpackEntryToMapMock(options) {
 function watchMockFile(options) {
     // 监听回调函数
     const watchCallback = () => {
-        // 让浏览器刷新
+        // 让浏览器刷新，如果没传server对象，则不主动触发浏览器刷新！
         if (options.server) {
             options.server.sockWrite(options.server.sockets, 'content-changed');
-        } else {
-            console.log(chalk.red('对不起，您没有传入webpack-dev-server对象，无法使用浏览器自动刷新功能！'));
         }
     }
     [...new Set(Object.values(options.mapMock).reduce((previousValue, currentValue) => ([...previousValue, ...currentValue]), []))].forEach(watchTarget => {
@@ -122,8 +120,9 @@ function responseMockData(req, res, table, mockdata, mapUrlByFile) {
     logUpdate(table.toString());
     const runResponse = () => {
 	      const urlObj = url.parse(req.headers.referer);
-        res.setHeader('service-mock-middleware', 'This is a mock data !');
+        res.setHeader('service-mock-middleware', 'This is a mock data.');
         res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
+        res.setHeader('service-mock-middleware-match', url.parse(req.url).pathname);
 	      res.setHeader('Access-Control-Allow-Origin', `${urlObj.protocol}//${urlObj.host}`);
 	      res.setHeader('Access-Control-Allow-Credentials', true);
 	      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');

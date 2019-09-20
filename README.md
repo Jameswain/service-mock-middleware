@@ -176,7 +176,7 @@ const smw = serviceMockMiddleware(options)
 | 参数名称        | 是否必传 | 描述                                                         |
 | --------------- | -------- | ------------------------------------------------------------ |
 | `webpackConfig` | **是**   | webpack配置                                                  |
-| `server`        | **是**   | webpack-dev-server对象，用于控制浏览器刷新                   |
+| `server`        | 否   | webpack-dev-server对象，用于控制浏览器刷新，不传则不主动刷新浏览器                   |
 | `filename`      | 否       | 设置mock配置文件所在的`文件夹`或`文件`的相对路径，相对于`webpack`的`entry`路径。<br />例1：`filename: '/mock-data/other.js'`<br />例2：`filename: '/mock-data/'`<br />例3：`filename: '/mock-data'` |
 | `publicPath`    | 否       | devServer.publicPath，当devServer配置中配置了publicPath字段后，就必须要把这个配置传给该中间件 |
 

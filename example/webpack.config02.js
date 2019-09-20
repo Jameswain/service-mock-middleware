@@ -26,7 +26,7 @@ module.exports = {
             // POST 创建 application/x-www-form-urlencoded URL编码解析器中间件
             app.use(bodyParser.urlencoded({ extended: false }));
             // 使用mock中间件
-            app.use(serviceMockMiddleware({ webpackConfig: module.exports, server }));
+            app.use(serviceMockMiddleware({ webpackConfig: module.exports }));
         }
     },
     plugins: [
