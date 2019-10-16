@@ -119,14 +119,14 @@ function responseMockData(req, res, table, mockdata, mapUrlByFile) {
     table.push([url.parse(req.url).pathname, true]);
     logUpdate(table.toString());
     const runResponse = () => {
-	      const urlObj = url.parse(req.headers.referer);
+        const urlObj = url.parse(req.headers.referer);
         res.setHeader('service-mock-middleware', 'This is a mock data.');
         res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
         res.setHeader('service-mock-middleware-match', url.parse(req.url).pathname);
-	      res.setHeader('Access-Control-Allow-Origin', `${urlObj.protocol}//${urlObj.host}`);
-	      res.setHeader('Access-Control-Allow-Credentials', true);
-	      res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
-	      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        res.setHeader('Access-Control-Allow-Origin', `${urlObj.protocol}//${urlObj.host}`);
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         delete mockdata.delaytime;
         res.json(mockdata).end();
     }
@@ -145,15 +145,15 @@ function serviceMockMiddleware(options = {
 }) {
     // 初始化中间件，监听mock文件目录或文件
     initialize(options);
-    return function smm(req, res, next) {
+    return async function smm(req, res, next) {
         if (path.parse(req.url.split('?')[0]).ext || !req.headers.referer) { // 不是ajax请求 || 没有webpack配置 || req.headers.referer为undefied，表示直接在浏览器访问接口，不走mock
             return next();
         } else {
             logUpdate.clear();
-		        let pathname = new URL(req.headers.referer).pathname;
+            let pathname = new URL(req.headers.referer).pathname;
             pathname = ['.html', '.htm'].includes(path.parse(pathname).ext) ? pathname : 'index.html';
-		        pathname = pathname.replace(options.publicPath, '');
-		        pathname = pathname.indexOf('/') === 0 ? pathname.substr(1) : pathname;
+            pathname = pathname.replace(options.publicPath, '');
+            pathname = pathname.indexOf('/') === 0 ? pathname.substr(1) : pathname;
             const table = new Table({head: ['请求路径', '开关[enable]'], style: {border: []}});
             if (options.mapMock[pathname]) {    // 有mock配置文件映射
                 // 请求路径对应的mock文件路径
@@ -186,7 +186,7 @@ function serviceMockMiddleware(options = {
                         }
                     }
                 }, {});
-
+                
                 if (!mockjson || mockjson.enable === false) {
                     mockjson && logUpdate(table.toString());
                     return next();
@@ -201,6 +201,10 @@ function serviceMockMiddleware(options = {
                             console.error(e.message);
                             // console.error(e.trace());
                         }
+                        if (mockdata instanceof Promise) {
+                            mockdata = await mockdata;
+                        }
+                        
                         if (!mockdata) {
                             console.error(url.parse(req.url).pathname + '函数没有返回值，返回内容为：' + mockdata);
                             return next();
