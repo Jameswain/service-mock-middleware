@@ -8,8 +8,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const logUpdate = require("log-update");
 const chalk = require('chalk');
 const semver = require('semver')
-const packageConfig = require('./package.json')
-const currentVersion = semver.clean(process.version);
+const updateNotifier = require('update-notifier');
+const pkg = require('./package.json');
+const notifier = updateNotifier({ pkg });  // 默认为1天检查一次
+notifier.notify();
 
 /**
  * 设置index.html和mock文件映射关系
