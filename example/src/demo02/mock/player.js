@@ -25,7 +25,8 @@ module.exports = {
       ]
     }
   },
-  '/video_info': ({ id }) => {
+  '/video_info': (params) => {
+    console.log('/video_info=>', params);
     return {
       code: 200,
       msg: '请求成功',

@@ -1,7 +1,7 @@
 import $ from '../common/ajax'
 
-$.get('/search_subjects', res => {
+$.post('/search_subjects', { name: 'jameswain' },res => {
     console.log('/search_subjects =>', JSON.parse(res));
 });
 
-$.get('/api/demo');
+$.post('/api/demo');
