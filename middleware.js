@@ -7,7 +7,7 @@ const { URL } = url;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const logUpdate = require("log-update");
 const chalk = require('chalk');
-const semver = require('semver')
+const getRawBody = require('raw-body');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 const notifier = updateNotifier({ pkg });  // 默认为1天检查一次
@@ -131,13 +131,38 @@ function responseMockData(req, res, table, mockdata, mapUrlByFile) {
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         delete mockdata.delaytime;
         res.json(mockdata).end();
-    }
+    };
     if (mockdata.delaytime) {
         setTimeout(runResponse, mockdata.delaytime);
     } else {
         runResponse();
     }
 }
+
+/**
+ * 获取post请求体内容
+ * @param req
+ */
+const getPostBody = (req) => {
+    return new Promise((resolve, reject) => {
+        if (req.method === 'POST') {
+            getRawBody(req, {
+                length: req.headers['content-length'],
+                limit: '10mb',
+                encoding: 'utf-8',
+            }, (err, raw) => {
+                if (err) reject(err);
+                try {
+                    resolve(JSON.parse(raw))
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        } else {
+            resolve({});
+        }
+    });
+};
 
 function serviceMockMiddleware(options = {
     filename: 'mock',       // mock配置文件名称
@@ -188,7 +213,7 @@ function serviceMockMiddleware(options = {
                         }
                     }
                 }, {});
-                
+
                 if (!mockjson || mockjson.enable === false) {
                     mockjson && logUpdate(table.toString());
                     return next();
@@ -196,7 +221,8 @@ function serviceMockMiddleware(options = {
                     let mockdata = mockjson[url.parse(req.url).pathname];
                     if (typeof mockdata === 'function') { // 如果是一个函数，则执行函数，并传入请求参数和req，res对象
                         try {
-                            mockdata = mockdata({ ...req.query, ...req.body }, req, res);
+                            const body = await getPostBody(req);
+                            mockdata = mockdata({ ...req.query, ...body }, req, res);
                         } catch (e) {
                             const pathname = url.parse(req.url).pathname;
                             console.error(chalk.red(pathname, '函数语法错误，请检测您的mock文件：', mapUrlByFile[pathname]));
@@ -206,17 +232,11 @@ function serviceMockMiddleware(options = {
                         if (mockdata instanceof Promise) {
                             mockdata = await mockdata;
                         }
-                        
+
                         if (!mockdata) {
                             console.error(url.parse(req.url).pathname + '函数没有返回值，返回内容为：' + mockdata);
                             return next();
                         } else if (mockdata.enable || mockdata.enable === void 0) {
-                            // table.push([url.parse(req.url).pathname, true]);
-                            // delete mockdata.enable;
-                            // res.setHeader('service-mock-middleware', 'This is a mock data !');
-                            // res.setHeader('service-mock-middleware-file', mapUrlByFile[url.parse(req.url).pathname]);
-                            // res.json(mockdata).end();
-                            // logUpdate(table.toString());
                             responseMockData(req, res, table, mockdata, mapUrlByFile);
                         } else {
                             table.push([url.parse(req.url).pathname, false]);

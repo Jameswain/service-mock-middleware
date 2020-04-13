@@ -1,6 +1,6 @@
 module.exports = {
   // enable: false,
-  '/video_list': ({uid}) => {
+  '/video_list': ({ uid }) => {
     return {
       // enable: false,
       code: 200,
