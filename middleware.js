@@ -155,7 +155,7 @@ const getPostBody = (req) => {
                 try {
                     resolve(JSON.parse(raw))
                 } catch (e) {
-                    reject(e);
+                    resolve({});
                 }
             });
         } else {
