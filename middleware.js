@@ -60,7 +60,7 @@ function webpackEntryToMapMock(options) {
             for (let i = 0; i < arrJs.length; i++) {
                 const watchTarget = path.resolve(path.join(path.parse(arrJs[i]).dir, options.filename));
                 arrHtmlPlugins.forEach(p => {
-                    if (!p.options.chunks.includes(key)) return;
+                    if (p.options.chunks !== 'all' && !p.options.chunks.includes(key)) return;
                     setMapMock(p, options, watchTarget);
                 });
             }
