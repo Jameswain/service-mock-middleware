@@ -1,3 +1,5 @@
+### v1.3.8
+- 🛠 修复taro环境下chunks存在的一个bug
 ### v1.3.7
 - 🚀 支持post请求体解析
 - 🚀 将post请求体合并到params参数中
